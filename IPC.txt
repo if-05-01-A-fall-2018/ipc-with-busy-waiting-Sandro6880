@@ -1,0 +1,46 @@
+1). Race Condition:
+
+A "Race Condition" is which Thread finished his task first. Since they are scheduled by the
+Scheduler they don't do task simultaneous on a 1-core Machine!
+
+2.1) Disabling Interrupts
+
+In multi-processor system, each CPU/core executes code simultaneously,
+so whether the current CPU has disabled interrupts has nothing to do
+to avoid other CPU from entering the same region.
+
+2.2)
+
+1.It is unwise to give user processes the power to turn off interrupts.
+  Suppose that one of them did, and then never turned them on again?
+2.If the system is a multiprocessor disabling interrupts affects
+  only the CPU that executed the disable instruction. The other ones will continue running and can access
+  the shared memory
+
+3) Peterson's Solution
+
+3.1)
+  1. Process 0 entered enter_region thus blocking any other processes from joining and it finishes it.
+     Since process 1 started enter_region before 0 it is blocked from entering and is waiting for 0 to
+     leave the Region. After 0 leaves the region 1 is not blocked anymore and is allowed to go to
+     the critical area and finish its task.
+  2. Both would get blocked in the while since both are interested and both are initialized.
+
+3.2)
+  As said in the 3.1) 2 the second scenario will fail.
+
+3.3) The loser is the process which is not allowed to go to the crucial Area.
+
+3.4)
+
+  int loser // shared variable
+  Bool interested[3] // three processes only
+  void enter_region(int process)
+  {
+    int other = 2 - process;
+    int other2 = 2 - other;
+    interested[process] = True;
+    interested[other2] = True;
+    loser = process;
+    while (loser == process && interested[other] && interested[other2]) ;
+  }
